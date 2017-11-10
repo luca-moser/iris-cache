@@ -2,5 +2,5 @@ services:
   - redis-server
 language: go
 go:
-  - 1.7
+  - 1.9
 script: go test -v -bench ./...

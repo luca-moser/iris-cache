@@ -9,16 +9,17 @@ import (
 
 const redisStoreName = "Redis Store"
 
-// Creates a new redis store using the given client
-func NewRedisStore(client *redis.Client) *redisstore {
+// NewRedisStore creates a new redis store using the given client
+func NewRedisStore(client *redis.Client) Store {
 	return &redisstore{
 		client: client,
-		config: CacheStoreConfig{StoreName: redisStoreName}}
+		config: StoreConfig{StoreName: redisStoreName},
+	}
 }
 
 type redisstore struct {
 	client *redis.Client
-	config CacheStoreConfig
+	config StoreConfig
 }
 
 func (rs *redisstore) Store(cacheKey string, data []byte) error {
@@ -49,10 +50,10 @@ func (rs *redisstore) Delete(cacheKey string) error {
 	return err
 }
 
-func (rs *redisstore) Config() CacheStoreConfig {
+func (rs *redisstore) Config() StoreConfig {
 	return rs.config
 }
 
-func (rs *redisstore) SetConfig(config CacheStoreConfig) {
+func (rs *redisstore) SetConfig(config StoreConfig) {
 	rs.config = config
 }

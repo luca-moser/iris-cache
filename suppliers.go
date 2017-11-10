@@ -8,12 +8,14 @@ import (
 	"github.com/kataras/iris"
 )
 
-// Converts the request's path to a md5 hash
-func RequestPathToMD5(ctx *iris.Context) string {
-	return fmt.Sprintf("%x", md5.Sum(ctx.RequestURI()))
+// RequestPathToMD5 converts the request's path to a md5 hash
+func RequestPathToMD5(ctx iris.Context) string {
+	u := ctx.Request().RequestURI
+	return fmt.Sprintf("%x", md5.Sum([]byte(u))) // or ctx.Path if no subdomains involved.
 }
 
-// Converts the request's path to a sha1 hash
-func RequestPathToSha1(ctx *iris.Context) string {
-	return fmt.Sprintf("%x", sha1.Sum(ctx.RequestURI()))
+// RequestPathToSha1 converts the request's path to a sha1 hash
+func RequestPathToSha1(ctx iris.Context) string {
+	u := ctx.Request().RequestURI
+	return fmt.Sprintf("%x", sha1.Sum([]byte(u)))
 }
