@@ -7,17 +7,18 @@ import (
 
 const inMemoryStoreName = "In-Memory Store"
 
-// Creates a new in-memory store
-func NewInMemoryStore() *inmemorystore {
+// NewInMemoryStore creates a new in-memory store
+func NewInMemoryStore() Store {
 	return &inmemorystore{
 		cache:  make(map[string]cacheddata),
-		config: CacheStoreConfig{StoreName: inMemoryStoreName}}
+		config: StoreConfig{StoreName: inMemoryStoreName},
+	}
 }
 
 type inmemorystore struct {
-	sync.Mutex
+	sync.RWMutex
 	cache  map[string]cacheddata
-	config CacheStoreConfig
+	config StoreConfig
 }
 
 func (ims *inmemorystore) Store(cacheKey string, data []byte) error {
@@ -28,9 +29,9 @@ func (ims *inmemorystore) Store(cacheKey string, data []byte) error {
 }
 
 func (ims *inmemorystore) Retrieve(cacheKey string) (*cacheddata, bool, error) {
-	ims.Lock()
+	ims.RLock()
 	cachedData, ok := ims.cache[cacheKey]
-	ims.Unlock()
+	ims.RUnlock()
 	return &cachedData, ok, nil
 }
 
@@ -41,10 +42,10 @@ func (ims *inmemorystore) Delete(cacheKey string) error {
 	return nil
 }
 
-func (ims *inmemorystore) Config() CacheStoreConfig {
+func (ims *inmemorystore) Config() StoreConfig {
 	return ims.config
 }
 
-func (ims *inmemorystore) SetConfig(config CacheStoreConfig) {
+func (ims *inmemorystore) SetConfig(config StoreConfig) {
 	ims.config = config
 }
